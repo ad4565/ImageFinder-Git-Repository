@@ -29,11 +29,11 @@ public class WebsiteData {
         return id;
     }
 
-    public String getWebsiteName() {
+    public String getWebsiteTitle() {
         return websiteTitle;
     }
 
-    public String getImages() {
+    public String getImagesUrls() {
         return imageUrls;
     }
 

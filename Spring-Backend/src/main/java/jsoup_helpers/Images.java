@@ -8,6 +8,12 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+
+/**
+ * This class serves as a helper to jsoup by going through all of the links it is given
+ * and searching for images on each of the links. Multi-threaded, all links stored in "images" and get be retrieved
+ * after running the run method and using the getter
+ */
 public class Images extends Thread {
 
 
@@ -18,13 +24,14 @@ public class Images extends Thread {
 
     private String[] urls;
     private Set<String> images;
+    private String originalUrl;
 
-
-    public Images(int thread, int totalThreads, String[] urls){
+    public Images(int thread, int totalThreads, String[] urls, String originalUrl){
         this.totalThreads = totalThreads;
         this.thread = thread;
         this.images = new HashSet<String>();
         this.urls = urls;
+        this.originalUrl = originalUrl;
     }
     @Override
     public void run() {
@@ -43,12 +50,25 @@ public class Images extends Thread {
 
 
                     String documentUrl = doc.location();
-
                     for (Element image : doc.select("img")) {
-                        if (!image.attr("src").equals("")) {
-                            boolean add = this.images.add(image.attr("src"));
-                            if (add)
-                                System.out.println("Thread " + this.thread + " Found: " + image.attr("src"));
+                        //Checks for duplicates or empty sources
+                        if (!image.attr("src").equals("") && !images.contains(image.attr("src"))) {
+                            boolean add;
+                            //Hanles case where the photo is located on the website
+                            if(!image.attr("src").contains(doc.location()) && !image.attr("src").contains("https://")  && !image.attr("src").contains("www.")){
+                                String imageUrl = originalUrl + image.attr("src");
+                                add = this.images.add(imageUrl);
+                                if (add)
+                                    System.out.println("Thread " + this.thread + " Found: " + imageUrl);
+                            }
+                            else{
+                                add = this.images.add(image.attr("src"));
+                                if (add)
+                                    System.out.println("Thread " + this.thread + " Found: " + image.attr("src") );
+
+                            }
+
+
                         }
                     }
                 }
@@ -69,12 +89,25 @@ public class Images extends Thread {
 
 
                     String documentUrl = doc.location();
-
                     for (Element image : doc.select("img")) {
-                        if (!image.attr("src").equals("")) {
-                            boolean add = this.images.add(image.attr("src"));
-                            if (add)
-                                System.out.println("Thread " + this.thread + "Found: " + image.attr("src"));
+                        //Checks for duplicates or empty sources
+                        if (!image.attr("src").equals("") && !images.contains(image.attr("src"))) {
+                            boolean add;
+                            //Handles case where the photo is located on the website
+                            if(!image.attr("src").contains(doc.location()) && !image.attr("src").contains("https://") && !image.attr("src").contains("www.")) {
+                                String imageUrl = originalUrl + image.attr("src" );
+                                add = this.images.add(imageUrl);
+                                if (add)
+                                    System.out.println("Thread " + this.thread + " Found: " + imageUrl);
+                            }
+                            else{
+                                add = this.images.add(image.attr("src"));
+                                if (add)
+                                    System.out.println("Thread " + this.thread + " Found: " + image.attr("src") );
+
+                            }
+
+
                         }
                     }
                 }

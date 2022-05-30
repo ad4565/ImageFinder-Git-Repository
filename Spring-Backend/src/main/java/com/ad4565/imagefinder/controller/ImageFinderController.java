@@ -6,6 +6,7 @@ import com.ad4565.imagefinder.model_sql.WebsiteData;
 import com.ad4565.imagefinder.repository.WebsiteDataRepository;
 import jsoup_helpers.Images;
 import jsoup_helpers.Links;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,14 +32,15 @@ public class ImageFinderController {
     public ArrayList<Image> getImages(@RequestBody URL url) throws IOException {
         //initial page information
         Document doc = Jsoup.connect(url.getURL()).get();
+
+
         //check current url just in case of redirect by website
         String documentUrl = doc.location();
 
         System.out.println("Searching " + documentUrl + " for links.");
         Links links = new Links(documentUrl);
 
-
-
+        links.getLinks(documentUrl);
         String[] urls = links.getUrls();
 
         System.out.println("Searching " + documentUrl + "for Photos.");
@@ -46,7 +49,7 @@ public class ImageFinderController {
 
         //Start the threads
         for(int i = 0; i < threads.length; i++) {
-            threads[i] = new Images(i, numberOfThreads, urls);
+            threads[i] = new Images(i, numberOfThreads, urls, url.getURL());
             threads[i].start();
 
         }
@@ -85,9 +88,9 @@ public class ImageFinderController {
             Optional<WebsiteData> websiteData = websiteDataRepository.findByWebsiteTitle(websiteTitle);
             if(websiteData.isPresent()){
 
-                if(!websiteData.get().getImages().contains(url)) {
+                if(!websiteData.get().getImagesUrls().contains(url)) {
                     System.out.println("Saved: " + url + " into " + websiteTitle);
-                    String urls = websiteData.get().getImages();
+                    String urls = websiteData.get().getImagesUrls();
                     websiteData.get().setImages(urls + image.getUrl() + ",");
                     websiteDataRepository.save(websiteData.get());
                 }
@@ -107,11 +110,24 @@ public class ImageFinderController {
             return new ResponseEntity(HttpStatus.OK);
         }
         catch(Exception exception){
+            System.out.println(exception);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
+
+    @GetMapping("get-images")
+    public ResponseEntity<ArrayList<WebsiteData>> getImages(){
+
+        System.out.println("here");
+        ArrayList<WebsiteData> data = new ArrayList<>();
+        for(WebsiteData websiteData: websiteDataRepository.findAll()){
+            data.add(websiteData);
+        }
+
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
 
 
 

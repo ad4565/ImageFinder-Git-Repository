@@ -13,7 +13,6 @@ import java.util.Set;
  * This class serves as a helper to get all of unique links off of a website
  * Create object of this class passing in root url of the website
  * returns a Links object which has a urls field which is a set that contains all of the urls
- * Modified from: https://riptutorial.com/jsoup/example/30692/extracting-all-the-urls-from-a-website-using-jsoup--recursion-
  */
 
 public class Links {
@@ -25,7 +24,6 @@ public class Links {
         this.rootUrl = rootUrl;
         this.urls = new HashSet<String>();
         this.urls.add(rootUrl);
-        getLinks(rootUrl);
     }
 
     public String[] getUrls(){
@@ -51,8 +49,15 @@ public class Links {
                     getLinks(this_url);
                 }
             });
+
+
         }
-        catch(IOException exception){}
+        catch(IOException exception){
+            return;
+        }
+        catch(StackOverflowError error){
+            return;
+        }
     }
 
 
