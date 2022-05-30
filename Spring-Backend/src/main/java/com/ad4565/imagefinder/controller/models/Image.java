@@ -1,4 +1,4 @@
-package com.ad4565.imagefinder.controller.model_outgoing;
+package com.ad4565.imagefinder.controller.models;
 
 /**
  * This data model is the model in which images will be sent back to the front end

@@ -1,4 +1,4 @@
-package jsoup_helpers;
+package com.ad4565.imagefinder.jsoup_helpers;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

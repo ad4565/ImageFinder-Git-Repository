@@ -1,4 +1,4 @@
-package com.ad4565.imagefinder.controller.model_incoming;
+package com.ad4565.imagefinder.controller.models;
 
 public class URL {
 

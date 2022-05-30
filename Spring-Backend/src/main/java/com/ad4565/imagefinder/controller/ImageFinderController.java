@@ -1,12 +1,11 @@
 package com.ad4565.imagefinder.controller;
 
-import com.ad4565.imagefinder.controller.model_incoming.URL;
-import com.ad4565.imagefinder.controller.model_outgoing.Image;
+import com.ad4565.imagefinder.controller.models.URL;
+import com.ad4565.imagefinder.controller.models.Image;
 import com.ad4565.imagefinder.model_sql.WebsiteData;
 import com.ad4565.imagefinder.repository.WebsiteDataRepository;
-import jsoup_helpers.Images;
-import jsoup_helpers.Links;
-import org.apache.coyote.Response;
+import com.ad4565.imagefinder.jsoup_helpers.Images;
+import com.ad4565.imagefinder.jsoup_helpers.Links;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +14,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
